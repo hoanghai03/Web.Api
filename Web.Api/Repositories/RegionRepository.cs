@@ -1,4 +1,5 @@
-﻿using Web.Api.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using Web.Api.Data;
 using Web.Api.Models.Domain;
 
 namespace Web.Api.Repositories
@@ -12,9 +13,9 @@ namespace Web.Api.Repositories
         }
 
 
-        public IEnumerable<Region> GetAll()
+        public async Task<IEnumerable<Region>> GetAllAsync()
         {
-            return NZWalksDbContext.Regions.ToList();
+            return await NZWalksDbContext.Regions.ToListAsync();
         }
     }
 }

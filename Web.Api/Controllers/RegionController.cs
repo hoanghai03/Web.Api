@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Web.Api.Models.DTO;
 using Web.Api.Repositories;
 
 namespace Web.Api.Controllers
@@ -9,17 +11,22 @@ namespace Web.Api.Controllers
     public class RegionController : ControllerBase
     {
         public IRegionRepository _regionRepository { get; }
-        public RegionController(IRegionRepository regionRepository)
+        public IMapper Mapper { get; }
+
+        public RegionController(IRegionRepository regionRepository,IMapper mapper)
         {
             _regionRepository = regionRepository;
+            Mapper = mapper;
         }
 
 
         [HttpGet]
-        public IActionResult GetAllRegion()
+        public async Task<IActionResult> GetAllRegion()
         {
-            var regions = _regionRepository.GetAll();
-            return Ok(regions);
+            var regions = await _regionRepository.GetAllAsync();
+            // AutoMapper
+            var regionDto = Mapper.Map<List<RegionDto>>(regions);
+            return Ok(regionDto);
         }
     }
 }
