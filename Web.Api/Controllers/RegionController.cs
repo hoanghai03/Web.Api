@@ -49,6 +49,10 @@ namespace Web.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> AddRegionAsync(AddRegionRequest addRgionRequest)
         {
+            if(!ValidateAddRegionAsync(addRgionRequest))
+            {
+                return BadRequest(ModelState);
+            }
             // Request to Domain model
             var region = new Region()
             {
@@ -101,5 +105,31 @@ namespace Web.Api.Controllers
             var regionDto = Mapper.Map<RegionDto>(region);
             return Ok(region);
         }
+
+        #region method private
+        private bool ValidateAddRegionAsync(AddRegionRequest addRgionRequest)
+        {
+            if(addRgionRequest == null)
+            {
+                ModelState.AddModelError(nameof(addRgionRequest), "dcm data required");
+            }
+
+            if (string.IsNullOrEmpty(addRgionRequest.Code))
+            {
+                ModelState.AddModelError(nameof(addRgionRequest.Code), $"{addRgionRequest.Code} cannot be null or empty or white space");
+            }
+
+            if (addRgionRequest.Long <=0)
+            {
+                ModelState.AddModelError(nameof(addRgionRequest.Long), $"{nameof(addRgionRequest.Long)} cannot be less than or equal to zero");
+            }
+
+            if(ModelState.ErrorCount> 0) {
+                return false;
+            }
+
+            return true;
+        }
+        #endregion
     }
 }
